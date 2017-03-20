@@ -1,0 +1,123 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<!-- CSS START -->
+<link rel="stylesheet" href="~/lib/dropzone/dist/dropzone.css" />
+<link rel="stylesheet" href="~/css/TrainPortal.css" />
+<!-- CSS END -->
+
+<h1>Train Vaultix</h1>
+
+
+
+<div class="container-fluid text-center">
+    <div class="row content">
+        <div class="col-sm-12">
+            <div class="jumbotron">
+                <div>
+                    <select style="display: inline-block;" class="form-control" id="Classifier">
+                        <optgroup label="Finance">
+                            <option>Bank</option>
+                            <option>Bill</option>
+                            <option>Receipt</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <br />
+                <div class="dropzone" id="dropzoneForm">
+                    <div class="fallback">
+                        <input name="file" type="file" multiple />
+                    </div>
+                </div>
+                <br />
+                <input class="btn btn-primary" type="submit" value="Upload" id="submitBtn" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+
+        Dropzone.options.dropzoneForm = {
+            maxFiles: 5,
+            maxFileSize: 4, // MB
+            url: "/Home/UploadFiles",
+            autoProcessQueue: false,
+            paramName: "files",
+            init: function () {
+
+                // Capture the Dropzone instance as closure.
+                var _this = this;
+
+                this.on("maxfilesexceeded", function (data) {
+                    var res = eval('(' + data.xhr.responseText + ')');
+                });
+                this.on("addedfile", function (file) {
+                    // Create the remove button
+                    var removeButton = Dropzone.createElement("<button>Remove file</button>");
+                    // Listen to the click event
+                    removeButton.addEventListener("click", function (e) {
+                        // Make sure the button click doesn't submit the form:
+                        e.preventDefault();
+                        e.stopPropagation();
+                        // Remove the file preview.
+                        _this.removeFile(file);
+                        // If you want to the delete the file on the server as well,
+                        // you can do the AJAX request here.
+                    });
+                    // Add the button to the file preview element.
+                    file.previewElement.appendChild(removeButton);
+                });
+
+                this.on("sending", function (file, xhr, formData) {
+                    formData.append("Classifier", $('#Classifier :selected').text()); // Append all the additional input data of your form here!
+                });
+
+                var startUpload = document.getElementById("submitBtn");
+                startUpload.addEventListener("click", function () {
+                    _this.processQueue();
+                });
+
+
+                this.on("success", function (file, response) {
+                    let successProtocol = new Promise((resolve, reject) => {
+                        setTimeout(function () {
+                            // Produce a successful message to indicate that the server
+                            // has completely uploaded the file and ready for processing
+                            file.previewElement.classList.add("dz-success");
+                            if (file != null) resolve(file);
+                            else reject("File is empty!");
+                        }, 2000);
+                    });
+                    successProtocol.then(function (file) {
+                        // Remove file from the template itself
+                        _this.removeFile(file)
+                    }).catch(function (err) {
+                        alert(err);
+                    })
+                });
+            }
+        };
+
+        //Dropzone.options.dropzone = {
+        //    maxFilesize: 4, // MB,
+        //    enqueueForUpload: false,
+        //    paramName: "files"
+        //};
+
+        //function uploadClicked() {
+        //    var dz = Dropzone.forElement("#dropzone");
+        //    for (var i = 0; i < dz.files.length; i++) {
+        //        dz.filesQueue.push(dz.files[i]);
+        //    }
+        //    dz.processQueue();
+        //}
+
+    </script>
+}
+
+<!-- JS START -->
+<script src="~/lib/dropzone/dist/dropzone.js"></script>
+<!-- JS END -->
