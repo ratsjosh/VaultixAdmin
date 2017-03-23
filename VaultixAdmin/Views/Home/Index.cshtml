@@ -20,6 +20,9 @@
                         <optgroup label="Finance">
                             <option>Bank</option>
                             <option>Bill</option>
+                        </optgroup>
+                        <optgroup label="Miscellaneous">
+                            <option>Reminder</option>
                             <option>Receipt</option>
                         </optgroup>
                     </select>
@@ -41,7 +44,6 @@
     <script type="text/javascript">
 
         Dropzone.options.dropzoneForm = {
-            maxFiles: 5,
             maxFileSize: 4, // MB
             url: "/Home/UploadFiles",
             autoProcessQueue: false,
