@@ -13,7 +13,11 @@ namespace VaultixAdmin.ServerAPIs
 
         public static void Run()
         {
-            client.BaseAddress = new Uri("http://vaultixserver.azurewebsites.net/");
+            string uri = "http://vaultixserver.azurewebsites.net/";
+#if DEBUG
+            uri = "http://localhost:16554/";
+#endif
+            client.BaseAddress = new Uri(uri);
             client.DefaultRequestHeaders.Accept.Clear();
         }
         public static async Task<Uri> HttpTrainNeuralNetwork_MethodAsync(string classifier, string base64String)
