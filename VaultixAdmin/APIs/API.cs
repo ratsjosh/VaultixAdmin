@@ -26,7 +26,7 @@ namespace VaultixAdmin.ServerAPIs
             {
                 //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 var content = new StringContent($"\"{base64String}\"", Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await client.PostAsync($"api/images/HttpTrainNeuralNetworkAsync/{classifier}", content);
+                HttpResponseMessage response = await client.PostAsync($"api/images/HttpTrainImageNetworkAsync/{classifier}", content);
                 response.EnsureSuccessStatusCode();
 
                 // Return the URI of the created resource.
